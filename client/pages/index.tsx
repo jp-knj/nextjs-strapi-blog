@@ -1,18 +1,16 @@
 import {GetStaticProps} from "next";
 import { useRouter } from "next/router";
-import axios from "axios";
 
 import { PostCard } from "../components/PostCard";
-import {PostJsonResponse} from "../models/Post";
 
 export const getStaticProps: GetStaticProps = async () => {
-    const response = await axios.get("http://localhost:1337/api/posts", {
+    const response = await fetch("http://localhost:1337/api/posts", {
         headers: {
             Accept: "application/json",
         },
     });
-    const data: PostJsonResponse = response.data;
-
+    const dataJson = await response.json()
+    const data = await dataJson.data;
     return {
         props: {
             data,
@@ -24,7 +22,7 @@ const Home = ({data}) => {
     const router = useRouter();
     const makeUrl = (id: number) => router.push(`/posts/${id}`);
 
-    const posts = data.data.map((post) => (
+    const posts = data.map((post) => (
         <PostCard
             key={post.id}
             title={post.attributes.title}

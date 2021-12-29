@@ -8,7 +8,3 @@ export type Post = {
         published_at: any;
     }
 }
-
-export type PostJsonResponse = {
-    data: Post[];
-}
