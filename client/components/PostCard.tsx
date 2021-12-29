@@ -1,4 +1,3 @@
-
 type PostCardProps = {
     title: string;
     publishedAt: string;

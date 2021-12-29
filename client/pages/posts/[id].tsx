@@ -2,11 +2,7 @@ import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import axios from "axios";
 
-import {Post} from '../../models/Post'
-
-type Props = {
-    data: Post
-}
+import markdownToHtml from "../../libs/markdownToHtml";
 
 export const getStaticPaths: GetStaticPaths = async () => {
     const response = await axios.get("http://localhost:1337/api/posts");
@@ -26,24 +22,28 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
     const { data } = await axios.get(`http://localhost:1337/api/posts/${params.id}`);
+    const content = await markdownToHtml(data.data.attributes.content)
 
     return {
         props: {
-            data,
+            post: {
+               ...data.data,
+                content
+            }
         },
     };
 };
 
-const PostDetailView = ( {data} : any) => {
+const PostDetailView = ( {post} : any) => {
     const router = useRouter();
 
-    if (!data) return <div>Loading...</div>
+    if (!post) return <div>Loading...</div>
     return (
             <div>
                 <button onClick={() => router.back()}>Back</button>
-                <h2>{data.data.attributes.title}</h2>
-                <p>{data.data.attributes.published_at}</p>
-                <p>{data.data.attributes.content}</p>
+                <h2>{post.attributes.title}</h2>
+                <p>{post.attributes.publishedAt}</p>
+                <div dangerouslySetInnerHTML={{ __html: post.content }} />
             </div>
     );
 };
