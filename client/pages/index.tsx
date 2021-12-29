@@ -1,28 +1,19 @@
-import {GetStaticProps} from "next";
 import { useRouter } from "next/router";
+import useSWR from 'swr'
 
 import { PostCard } from "../components/PostCard";
+import { init } from '../libs/constants'
+import {Post} from '../models/Post'
 
-export const getStaticProps: GetStaticProps = async () => {
-    const response = await fetch("http://localhost:1337/api/posts", {
-        headers: {
-            Accept: "application/json",
-        },
-    });
-    const dataJson = await response.json()
-    const data = await dataJson.data;
-    return {
-        props: {
-            data,
-        },
-    };
-};
-
-const Home = ({data}) => {
+const Home = () => {
     const router = useRouter();
     const makeUrl = (id: number) => router.push(`/posts/${id}`);
+    const fetcher = url => fetch(url, init).then(r => r.json())
 
-    const posts = data.map((post) => (
+    const { data } = useSWR('http://localhost:1337/api/posts', fetcher)
+
+    if (!data) return <div>Loading...</div>
+    const posts = data.data.map((post:Post) => (
         <PostCard
             key={post.id}
             title={post.attributes.title}
@@ -31,7 +22,6 @@ const Home = ({data}) => {
         />
     ));
 
-    if (!data) return <div>loading...</div>
     return (
             <div>
                 <h1>My Blog</h1>

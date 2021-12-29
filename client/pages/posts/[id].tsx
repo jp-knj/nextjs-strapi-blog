@@ -1,12 +1,18 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
+import axios from "axios";
+
+import {Post} from '../../models/Post'
+
+type Props = {
+    data: Post
+}
 
 export const getStaticPaths: GetStaticPaths = async () => {
-    const response = await fetch("http://localhost:1337/api/posts");
-    const data = await response.json()
-    const posts = await data.data;
+    const response = await axios.get("http://localhost:1337/api/posts");
+    const posts = await response.data;
 
-    const paths = posts.map(post => {
+    const paths = posts.data.map((post) => {
         return {
             params: { id: String(post.id) },
         };
@@ -19,8 +25,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
-    const response = await fetch(`http://localhost:1337/api/posts/${params.id}`);
-    const data = await response.json()
+    const { data } = await axios.get(`http://localhost:1337/api/posts/${params.id}`);
+
     return {
         props: {
             data,
@@ -28,8 +34,10 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     };
 };
 
-const PostDetailView = ({ data }: any) => {
+const PostDetailView = ( {data} : any) => {
     const router = useRouter();
+
+    if (!data) return <div>Loading...</div>
     return (
             <div>
                 <button onClick={() => router.back()}>Back</button>
