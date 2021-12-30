@@ -1,5 +1,5 @@
 export const init = {
-    headers: {
-        Accept: "application/json",
-    },
+  headers: {
+    Accept: 'application/json',
+  },
 } as const;
