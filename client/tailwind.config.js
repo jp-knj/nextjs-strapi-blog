@@ -1,9 +1,10 @@
 module.exports = {
-    content: [
-        "./pages/**/*.{ts,tsx}",
+  mode: 'jit',
+  content: [
+        "./pages/**/*.{js,jsx,ts,tsx}",
         "./components/*.{ts,tsx}",
-    ],
-    theme: {
+  ],
+  theme: {
         extend: {},
     },
     plugins: [],

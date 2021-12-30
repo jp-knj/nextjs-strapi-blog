@@ -8,7 +8,7 @@ export const PostCard = ({ title, publishedAt, onClick }: PostCardProps) => {
   return (
     <div onClick={onClick}>
       <div>
-        <h2>{title}</h2>
+        <h2 className='text-[red]'>{title}</h2>
         <button>read</button>
       </div>
       <p>Published at {new Date(publishedAt).toLocaleDateString()}</p>
